@@ -1,5 +1,9 @@
+#2019-08-23 4개는 조금 잘막는다
 from environment import *
 from ai import ai
+from Tree import Tree
+from param import *
+from Engine import *
 import time
 
 game = env()
@@ -18,13 +22,17 @@ clock = pygame.time.Clock()
 game.draw_board(screen)
 s = 1
 
+tree = Tree(BLACK,game.board)
+engine = Engine(WHITE)
+engine.load('weights_w.h5')
+
 #while not game.gameOver:
 while True:
     clock.tick(FPS)
     
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP and event.button == LEFT and not game.gameOver:
-            game.update_board(event.pos)
+            action = game.update_board(event.pos)
             game.update_screen(screen)
             game.check_winner()
             if game.player == WHITE and not game.gameOver:
@@ -43,12 +51,15 @@ while True:
                 #game.board[action//BOARD_SIZE][action%BOARD_SIZE] = game.player
                 
                 #----------------------------------better MCTS AI----------------------------------    
-                engine = Node(game.board,game.player,game.player)
-                action = engine.rollout()
+                #engine = Node(game.board,game.player,game.player)
+                #action = engine.rollout()
                 
-                print('=================================')
-                engine.traverse()
-                print('=================================')
+                #print('=================================')
+                #engine.traverse()
+                #print('=================================')
+                
+                #----------------------------------neural network AI-------------------------------
+                _,_,action = tree.rollout(engine,engine)
                 
                 text = sf.render(str(action),True,(0,0,0))
                 pygame.draw.rect(screen,(255,255,255),[30,10,400,20])

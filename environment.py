@@ -34,6 +34,7 @@ class env:
         self.board[(pos[1]+15-MARGIN)//SPACE][(pos[0]+15-MARGIN)//SPACE] = self.player;
         self.check_winner()
         self.player *= WHITE
+        return (pos[1]+15-MARGIN)*19+pos[0]+15-MARGIN
         
     def check_winner(self):
         for y in range(BOARD_SIZE):

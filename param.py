@@ -13,20 +13,35 @@ STONE_MAX = 5
 NONE = 0
 BLACK = 1
 WHITE = -1
-EPOCH = 3000
+EPOCH = 1000
 
 def getAction(action):
     return action//BOARD_SIZE, action%BOARD_SIZE
 
-def state2input(state, player):
+def state2input(state, color, history = -1):
+    state = np.array(state).flatten()
     ret1 = []
     ret2 = []
-    ret3 = np.full((BOARD_SIZE,BOARD_SIZE),player)
-    for i in range(BOARD_SIZE):
-        ret1.append(1 if state[i,j] == BLACK else 0 for j in range(BOARD_SIZE))
-        ret2.append(1 if state[i,j] == WHITE else 0 for j in range(BOARD_SIZE))
-    ret1 = np.array(ret1)
-    ret2 = np.array(ret2)
-    ret = np.vstack((ret1,ret2,ret3))
-    return ret.reshape((3,BOARD_SIZE,BOARD_SIZE))
-    
+    ret3 = np.zeros(BOARD_SIZE*BOARD_SIZE)
+    if history != -1:
+        ret3[history] = 1
+    '''for i in range(BOARD_SIZE):
+        for j in range(BOARD_SIZE):
+            if state[i,j] == BLACK:
+                ret1.append(1)
+                ret2.append(0)
+            elif state[i,j] == WHITE:
+                ret1.append(0)
+                ret2.append(1)
+            else:
+                ret1.append(0)
+                ret2.append(0)'''
+    ret1 = np.array(state == color, dtype = np.int)
+    ret2 = np.array(state == -color, dtype = np.int)
+    ret = []
+    ret = [[ret1[i],ret2[i],ret3[i]] for i in range(BOARD_SIZE*BOARD_SIZE)]
+    #ret = [ret1,ret2,ret3]
+    ret = np.array(ret)
+    ret = ret.astype('float32')
+    #return ret.reshape((3, BOARD_SIZE,BOARD_SIZE))
+    return ret.reshape((BOARD_SIZE,BOARD_SIZE,3))
