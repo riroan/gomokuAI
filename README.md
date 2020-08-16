@@ -6,4 +6,6 @@ reference : [AlphaGomoku: An AlphaGo-based Gomoku Artificial Intelligence using 
 
 ### implementation
 
-- run index.py
+```
+run index.py
+```
