@@ -1,25 +1,23 @@
-# 문제점 : 게임이 끝났는데도 불구하고 rollout에 들어가서 68번째줄에서 오류가 난다.   => 해결
-
-# 2019-08-23 11:03 시작
-# 2019-08-23 11:47 끝 152회 착수
-
-# 2019-08-23 12:30 시작
-# 2019-08-23 12:59 오류
-
-# 2019-08-23 13:33 시작
-# 2019-08-23 22:00 no error
-
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from Engine import *
 from Tree import *
 from Replay import *
 from param import *
 import numpy as np
-import os
+
 import time
+
+
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
+config = ConfigProto()
+config.gpu_options.allow_growth = True
+session = InteractiveSession(config=config)
 
 print('hello alphagomoku')
 
-#os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 #board = np.zeros((BOARD_SIZE,BOARD_SIZE),dtype = int)
 #player = BLACK
@@ -30,11 +28,12 @@ engine_w = Engine(WHITE)
 replay_b = Replay()
 replay_w = Replay()
 
-#engine_b.generate_model()
-#engine_w.generate_model()
-#engine_b.model.summary()
-engine_b.load('weights_b3.h5')
-engine_w.load('weights_w3.h5')
+engine_b.generate_model()
+engine_w.generate_model()
+engine_b.model.summary()
+
+#engine_b.load('weights_b.h5')
+#engine_w.load('weights_w.h5')
 
 epoch = 100
 print("train start")
@@ -51,6 +50,7 @@ for _ in range(epoch):
     history = -1
     c = 0
     while not gameOver:
+        print(c)
         s_t, pi_t, h = tree.rollout(engine_b,engine_w)
         
         if player == BLACK:
@@ -59,10 +59,7 @@ for _ in range(epoch):
         else:
             replay_w.data_augmentation(s_t, pi_t, h = history)
             #replay_w.add(s_t,pi_t,history)
-        #print(replay_b.end)
         gameOver = tree.check_winner(tree.root_state,player)
-        #print(s_t)
-        #print(tree.root_state)
         if gameOver:
             winner = player
             break
@@ -88,17 +85,14 @@ for _ in range(epoch):
     
     replay_b.initialize()
     replay_w.initialize()
-    #replay_b.new_game()
-    #replay_w.new_game()
     
     print(_,'th game elapse',time.time()-start, 'total step : ',c)
     if winner == BLACK:
         print('black win')
     else:
         print('white win')
-    #print(time.time()-start)
-    engine_b.save_model('weights_b3.h5')
-    engine_w.save_model('weights_w3.h5')
+    engine_b.save_model('weights_b.h5')
+    engine_w.save_model('weights_w.h5')
     print(board)
 
 print('//==========================================================================//')

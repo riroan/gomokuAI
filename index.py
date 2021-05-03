@@ -1,4 +1,3 @@
-#2019-08-23 4개는 조금 잘막는다
 from environment import *
 from ai import ai
 from Tree import Tree
@@ -24,7 +23,7 @@ s = 1
 
 tree = Tree(BLACK,game.board)
 engine = Engine(WHITE)
-engine.load('weights_w.h5')
+#engine.load('weights_w.h5')
 
 #while not game.gameOver:
 while True:

@@ -75,7 +75,7 @@ class Tree:
         pi_t = self.n2pi()
         # 10s epoch = 400
         s_t = self.root_state.copy()
-        if random_policy:
+        if self.random_policy:
             action = np.random.choice(np.arange(pi_t.size),p=pi_t)
         else:
             action = np.argmax(pi_t)

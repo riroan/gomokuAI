@@ -43,5 +43,5 @@ def state2input(state, color, history = -1):
     #ret = [ret1,ret2,ret3]
     ret = np.array(ret)
     ret = ret.astype('float32')
-    #return ret.reshape((3, BOARD_SIZE,BOARD_SIZE))
-    return ret.reshape((BOARD_SIZE,BOARD_SIZE,3))
+    return ret.reshape((3, BOARD_SIZE,BOARD_SIZE))
+    #return ret.reshape((BOARD_SIZE,BOARD_SIZE,3))
