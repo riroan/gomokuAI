@@ -6,6 +6,14 @@ reference : [AlphaGomoku: An AlphaGo-based Gomoku Artificial Intelligence using 
 
 ### implementation
 
+####Play
+
 ```
 python index.py
+```
+
+#### Train
+
+```
+python Train.py
 ```
