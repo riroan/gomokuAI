@@ -6,7 +6,7 @@ reference : [AlphaGomoku: An AlphaGo-based Gomoku Artificial Intelligence using 
 
 ### implementation
 
-####Play
+#### Play
 
 ```
 python index.py
