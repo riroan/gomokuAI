@@ -5,6 +5,12 @@ from param import *
 from Engine import *
 import time
 
+
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
+config = ConfigProto()
+config.gpu_options.allow_growth = True
+session = InteractiveSession(config=config)
 game = env()
 
 pygame.init()
@@ -23,7 +29,9 @@ s = 1
 
 tree = Tree(BLACK,game.board)
 engine = Engine(WHITE)
-#engine.load('weights_w.h5')
+#engine.generate_model()
+#engine.model.load_weights("model_w_15.h5")
+engine.load('weights_w2.h5')
 
 #while not game.gameOver:
 while True:

@@ -32,11 +32,14 @@ engine_b.generate_model()
 engine_w.generate_model()
 engine_b.model.summary()
 
-#engine_b.load('weights_b.h5')
-#engine_w.load('weights_w.h5')
+engine_b.load('weights_b2.h5')
+engine_w.load('weights_w2.h5')
 
 epoch = 100
 print("train start")
+
+b_cnt = 0
+w_cnt = 0
 
 for _ in range(epoch):
     board = np.zeros((BOARD_SIZE,BOARD_SIZE),dtype = int)
@@ -50,7 +53,7 @@ for _ in range(epoch):
     history = -1
     c = 0
     while not gameOver:
-        print(c)
+        #print(c)
         s_t, pi_t, h = tree.rollout(engine_b,engine_w)
         
         if player == BLACK:
@@ -66,7 +69,7 @@ for _ in range(epoch):
         history = h
         c+=1
         player = -player
-        if c%50 == 10:
+        if c%10 == 0:
             print('Epoch : ',_,' step : ',c,' time : ', time.time()-start)
     
     for i in range(replay_b.end - replay_b.start):
@@ -88,11 +91,15 @@ for _ in range(epoch):
     
     print(_,'th game elapse',time.time()-start, 'total step : ',c)
     if winner == BLACK:
+        b_cnt+=1
         print('black win')
     else:
+        w_cnt+=1
         print('white win')
-    engine_b.save_model('weights_b.h5')
-    engine_w.save_model('weights_w.h5')
+    print("black : "+str(b_cnt)+" vs white : "+str(w_cnt))
+    print("win rate(black) : "+str(b_cnt/(_ + 1))+", win rate(white) : "+str(w_cnt/(_+1)))
+    engine_b.save_model('weights_b2.h5')
+    engine_w.save_model('weights_w2.h5')
     print(board)
 
 print('//==========================================================================//')

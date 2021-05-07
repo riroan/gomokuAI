@@ -18,7 +18,7 @@ class Tree:
         self.player = -self.player
         return s_i, s_i, random.randint(0,360)'''
         
-        EPOCH = 500
+        EPOCH = 400
         last_action = -1
         s_t = self.root_state
         pi_t = self.root_state
