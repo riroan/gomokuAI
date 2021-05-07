@@ -17,3 +17,6 @@ python index.py
 ```
 python Train.py
 ```
+
+# !!!아직 훈련 성능 검증 안됨!!!
+### (pretrained model 쓰면 작동)
