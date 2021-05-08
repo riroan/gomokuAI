@@ -35,7 +35,7 @@ engine_b.model.summary()
 engine_b.load('weights_b2.h5')
 engine_w.load('weights_w2.h5')
 
-epoch = 100
+epoch = 10000
 print("train start")
 
 b_cnt = 0
@@ -101,6 +101,9 @@ for _ in range(epoch):
     engine_b.save_model('weights_b2.h5')
     engine_w.save_model('weights_w2.h5')
     print(board)
+    f = open("1.txt","w")
+    f.write(str(_))
+    f.close()
 
 print('//==========================================================================//')
 print('끝')
