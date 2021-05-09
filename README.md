@@ -23,6 +23,7 @@ python Train.py
 
 ---
 <strike>
+  
 ## 5월 7일부터 gcp에서 훈련중
 
 훈련 안한 모델
