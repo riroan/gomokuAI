@@ -22,7 +22,7 @@ python Train.py
 ### (pretrained model 쓰면 작동)
 
 ---
-
+<strike>
 ## 5월 7일부터 gcp에서 훈련중
 
 훈련 안한 모델
@@ -50,6 +50,6 @@ python Train.py
 
 (최악의 경우에는 다시 구현해야할수도... 너무 옛날에 구현한거라 기억이 잘 안난다...)
 
-
+</strike>
 
 # 알고리즘 오류 발견으로 다시 짤 예정
