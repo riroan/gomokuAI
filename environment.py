@@ -3,11 +3,13 @@ import pygame
 from param import *
 
 class env:
-    def __init__(self):
+    def __init__(self, font):
         self.board = np.zeros((BOARD_SIZE,BOARD_SIZE))
         self.player = BLACK
         self.gameOver = False
         self.winner = NONE
+        self.actions = []
+        self.sf = font
 
     def draw_board(self,screen):
         screen.fill(WHITE_COLOR)
@@ -18,12 +20,26 @@ class env:
             pygame.draw.line(screen,BLACK_COLOR,[MARGIN,MARGIN+i*SPACE],[MARGIN+SPACE*(BOARD_SIZE-1),MARGIN+i*SPACE])
 
     def update_screen(self,screen):
-        for i in range(BOARD_SIZE):
+        '''for i in range(BOARD_SIZE):
             for j in range(BOARD_SIZE):
                 if self.board[i][j] == BLACK:
                     pygame.draw.circle(screen,BLACK,[MARGIN + j*SPACE,MARGIN + i*SPACE],STONE_SIZE)
                 elif self.board[i][j] == WHITE:
-                    pygame.draw.circle(screen,WHITE,[MARGIN + j*SPACE,MARGIN + i*SPACE],STONE_SIZE)
+                    pygame.draw.circle(screen,WHITE,[MARGIN + j*SPACE,MARGIN + i*SPACE],STONE_SIZE)'''
+        for ix, action in enumerate(self.actions):
+            i,j = getAction(action)
+            if ix%2==0:
+                text = self.sf.render(str(ix),True,(255,255,255))
+                pygame.draw.circle(screen,BLACK,[MARGIN + j*SPACE,MARGIN + i*SPACE],STONE_SIZE)
+            else:
+                text = self.sf.render(str(ix),True,(0,0,0))
+                pygame.draw.circle(screen,WHITE,[MARGIN + j*SPACE,MARGIN + i*SPACE],STONE_SIZE)
+                
+            if ix < 10:
+                screen.blit(text,(MARGIN + j*SPACE - 3,MARGIN + i*SPACE - 3))
+            else:
+                screen.blit(text,(MARGIN + j*SPACE - 6,MARGIN + i*SPACE - 3))
+                
                     
     # get click event
     def update_board(self,pos):
@@ -31,10 +47,13 @@ class env:
             return
         if self.board[(pos[1]+15-MARGIN)//SPACE][(pos[0]+15-MARGIN)//SPACE] != NONE:
             return
-        self.board[(pos[1]+15-MARGIN)//SPACE][(pos[0]+15-MARGIN)//SPACE] = self.player;
+        self.board[(pos[1]+15-MARGIN)//SPACE][(pos[0]+15-MARGIN)//SPACE] = self.player
         self.check_winner()
         self.player *= WHITE
-        return (pos[1]+15-MARGIN)*19+pos[0]+15-MARGIN
+        return (pos[1]+15-MARGIN)//SPACE * BOARD_SIZE + (pos[0]+15-MARGIN) // SPACE
+    
+    def add_action(self, action):
+        self.actions.append(action)
         
     def check_winner(self):
         for y in range(BOARD_SIZE):

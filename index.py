@@ -11,16 +11,18 @@ from tensorflow.compat.v1 import InteractiveSession
 config = ConfigProto()
 config.gpu_options.allow_growth = True
 session = InteractiveSession(config=config)
-game = env()
+
 
 pygame.init()
 
 LEFT = 1
-size = [2*MARGIN+SPACE*(BOARD_SIZE-1)+500,2*MARGIN+SPACE*(BOARD_SIZE-1)+500]
+size = [2*MARGIN+SPACE*(BOARD_SIZE-1),2*MARGIN+SPACE*(BOARD_SIZE-1)+100]
 screen = pygame.display.set_mode(size)
 
 pygame.display.set_caption("Omok")
-sf = pygame.font.SysFont("Monospace",20)
+sf = pygame.font.SysFont("Arial",15,True)
+
+game = env(sf)
 
 clock = pygame.time.Clock()
 
@@ -40,8 +42,10 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONUP and event.button == LEFT and not game.gameOver:
             action = game.update_board(event.pos)
+            game.add_action(action)
             game.update_screen(screen)
             game.check_winner()
+            pygame.display.flip()
             if game.player == WHITE and not game.gameOver:
                 #---------------------------------Naive AI----------------------------------
                 #engine = ai(game)
@@ -67,10 +71,10 @@ while True:
                 
                 #----------------------------------neural network AI-------------------------------
                 _,_,action = tree.rollout(engine,engine)
+                game.add_action(action)
                 
-                text = sf.render(str(action),True,(0,0,0))
-                pygame.draw.rect(screen,(255,255,255),[30,10,400,20])
-                screen.blit(text,(30,10))
+                #pygame.draw.rect(screen,(255,255,255),[30,10,400,20])
+                x,y = getAction(action)
                 game.board[action//BOARD_SIZE][action%BOARD_SIZE] = game.player
                 
                 game.check_winner()

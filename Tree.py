@@ -22,7 +22,7 @@ class Tree:
         last_action = -1
         s_t = self.root_state
         pi_t = self.root_state
-        is_it =0
+        is_it = 0
         
         for i in range(EPOCH):
             #valid_vector = [1 if i is 0 else 0 for i in self.root_state]
