@@ -28,11 +28,11 @@ python Train.py
 
 훈련 안한 모델
 
-<img src="img/no_trained.png" height = "500">
+<img src="old/img/no_trained.png" height = "500">
 
 훈련 2일 한 모델(200epoch) [21/05/09]
 
-<img src="img/trained1.png" height = "500">
+<img src="old/img/trained1.png" height = "500">
 
 
 ### 중간평가
