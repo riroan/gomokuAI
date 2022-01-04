@@ -1,6 +1,7 @@
 from config import *
 from utils import *
 import numpy as np
+from replay import *
 
 
 class Rule:
@@ -9,12 +10,12 @@ class Rule:
         # result : string -> reward, done
         self.reward = 0
         self.done = False
-        self.replays = []  # append.replay : [두기전 오목 판, 다음에 놓을 돌 색, 행동, 가치]
+        self.replays = Replay()  # append.replay : [두기전 오목 판, 다음에 놓을 돌 색, 행동, 가치]
 
     def move(self, color):
         # action = ...
         # value = ...
-        self.replays.append([self.board, color, action, value])
+        self.replays.replays.append([self.board, color, action, value])
 
         act = index2coordinate(action, BOARD_SIZE)
         self.board[act[0]][act[1]] = color
