@@ -64,8 +64,3 @@ class Rule:
             self.done = True
             self.reward = 0
         return
-
-
-r = Rule()
-ob = r.get_action()
-print(ob)
