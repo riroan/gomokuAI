@@ -1,8 +1,7 @@
 import numpy as np
-from config import *
 
 class Node:
-    def __init__(self, action, color, P=0, parent = None):
+    def __init__(self, action, cfg, color, P=0, parent = None):
         self.N = 0
         self.Q = 0
         self.W = 0
@@ -16,9 +15,10 @@ class Node:
         self.children = []
 
         self.end = False
+        self.cfg = cfg
 
     def get_action(self):
-        N_tau = np.array([child.N**(1/tau) for child in self.children])
+        N_tau = np.array([child.N**(1/self.cfg.tau) for child in self.children])
         s = sum(N_tau)
         pi = np.array([i/s for i in N_tau])
 
@@ -46,7 +46,7 @@ class Node:
         return next_node, action
 
     def expansion(self, p):
-        for i in range(BOARD_SIZE*BOARD_SIZE):
+        for i in range(self.cfg.BOARD_SIZE*self.cfg.BOARD_SIZE):
             self.children.append(Node(i, -self.color, p[i], self))
 
     def backup(self, value):
@@ -54,8 +54,8 @@ class Node:
         self.W+=value
         self.Q = self.W/self.N
         if not self.is_root():
-            self.parent.backup(-decay * value)
+            self.parent.backup(-self.cfg.decay * value)
 
     def UCB(self):
-        self.U = c_puct * self.P * np.sqrt(self.parent.N) / (1+self.N)
+        self.U = self.cfg.c_puct * self.P * np.sqrt(self.parent.N) / (1+self.N)
         return self.U + self.Q
