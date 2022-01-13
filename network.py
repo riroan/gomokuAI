@@ -75,3 +75,4 @@ class RL_player:
 
 #p1_RL = RL_player()
 #p1_RL.save_network("p1_RL_220101")
+#test
