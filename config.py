@@ -26,12 +26,12 @@ class Config:
         self.WHITE = -1
 
         self.coef = 1e-4
+        self.LEFT = 1
 
     def index2coordinate(self, index):
         row = index // self.BOARD_SIZE
         col = index % self.BOARD_SIZE
         return int(row), int(col)
-        self.LEFT = 1
     
     def text_pos(self, ix, x, y):
         if ix < 10:
