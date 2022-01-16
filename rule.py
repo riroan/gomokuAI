@@ -1,6 +1,5 @@
 from utils import index2coordinate
 import numpy as np
-from replay import Replay
 
 
 class Rule:
