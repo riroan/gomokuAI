@@ -2,47 +2,36 @@ import pygame
 import time
 from config import Config
 from game import Game
+from renderer import Renderer
+from rule import Rule
 
-pygame.init()
+
+# init configuration
+done = False
 cfg = Config()
-LEFT = 1
-size = [2*cfg.MARGIN+cfg.SPACE*(cfg.BOARD_SIZE-1),2*cfg.MARGIN+cfg.SPACE*(cfg.BOARD_SIZE-1)+100]
-screen = pygame.display.set_mode(size)
+rule = Rule(cfg)
+game = Game(cfg, rule)
 
-pygame.display.set_caption("Omok")
+# init pygame
+pygame.init()
+screen = pygame.display.set_mode(cfg.size)
 sf = pygame.font.SysFont("Arial",15,True)
-
-
-game = Game(sf)
-
 clock = pygame.time.Clock()
+pygame.display.set_caption("Omok")
+renderer = Renderer(sf, cfg)
 
-game.draw_board(screen)
-s = 1
-
-#while not game.gameOver:
-while True:
+renderer.render_base(screen)
+while not game.over:
     clock.tick(cfg.FPS)
     
+    # get mouse click event
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONUP and event.button == LEFT and not game.gameOver:
-            action = game.update_board(event.pos)
-            game.add_action(action)
-            game.update_screen(screen)
-            game.check_winner()
-            pygame.display.flip()
+        if event.type == pygame.MOUSEBUTTONUP and event.button == cfg.LEFT:
+            action = renderer.get_action(event.pos)
+            if game.action(action):
+                renderer.render_dol(screen, action, -game.color, game.num)
+                done, player = rule.end_check(game.board)
 
-                
-    if game.gameOver and game.winner == cfg.BLACK:
-        msg = sf.render('Black player win!',True,(0,0,0))
-        screen.blit(msg,(20,630))
-        pygame.display.flip()
-        break
-    elif game.gameOver and game.winner == cfg.WHITE:
-        msg = sf.render('White player win!',True,(0,0,0))
-        screen.blit(msg,(20,630))
-        pygame.display.flip()
-        break
     pygame.display.flip()
 
 time.sleep(30)
