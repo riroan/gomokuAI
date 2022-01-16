@@ -14,6 +14,7 @@ class Config:
         self.IN_MARGIN = 20
         self.OUT_MARGIN = 30
         self.MARGIN = self.IN_MARGIN+self.OUT_MARGIN
+        self.size = [2*self.MARGIN+self.SPACE*(self.BOARD_SIZE-1),2*self.MARGIN+self.SPACE*(self.BOARD_SIZE-1)]
         self.BLACK_COLOR = (  0,  0,  0)
         self.WHITE_COLOR = (255,255,255)
         self.BOARD_COLOR = (252,191,146)
@@ -23,3 +24,10 @@ class Config:
         self.NONE = 0
         self.BLACK = 1
         self.WHITE = -1
+        self.LEFT = 1
+    
+    def text_pos(self, ix, x, y):
+        if ix < 10:
+            return (self.MARGIN + y*self.SPACE - 3, self.MARGIN + x*self.SPACE - 3)
+        else:
+            return (self.MARGIN + y*self.SPACE - 6, self.MARGIN + x*self.SPACE - 3)
