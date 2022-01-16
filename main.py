@@ -31,6 +31,7 @@ while not game.over:
             if game.action(action):
                 renderer.render_dol(screen, action, -game.color, game.num)
                 done, player = rule.end_check(game.board)
+                game.over = done
 
     pygame.display.flip()
 
