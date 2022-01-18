@@ -28,6 +28,8 @@ class Config:
         self.coef = 1e-4
         self.LEFT = 1
 
+        self.maxlen = 100
+
     def index2coordinate(self, index):
         row = index // self.BOARD_SIZE
         col = index % self.BOARD_SIZE
