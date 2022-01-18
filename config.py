@@ -6,8 +6,8 @@ class Config:
         self.NUM_SIMULATION = 400
 
         self.tau = 10
-        self.c_puct = 0
-        self.decay = 0
+        self.c_puct = 5
+        self.decay = 0.95
 
         self.SPACE = 30
         self.STONE_SIZE = 15
