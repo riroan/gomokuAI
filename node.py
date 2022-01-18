@@ -23,10 +23,10 @@ class Node:
         pi = np.array([i/s for i in N_tau])
 
         # Deterministic Policy
-        return np.argmax(pi)
+        #return np.argmax(pi)
 
         # Stochastic Policy
-        # return np.random.choice(np.arange(BOARD_SIZE**2), p=pi)
+        return np.random.choice(np.arange(self.cfg.BOARD_SIZE**2), p=pi)
         
 
     def is_root(self):
@@ -47,7 +47,7 @@ class Node:
 
     def expansion(self, p):
         for i in range(self.cfg.BOARD_SIZE*self.cfg.BOARD_SIZE):
-            self.children.append(Node(i, -self.color, p[i], self))
+            self.children.append(Node(i, self.cfg, -self.color, p[i], self))
 
     def backup(self, value):
         self.N+=1
