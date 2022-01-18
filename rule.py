@@ -1,4 +1,3 @@
-from utils import index2coordinate
 import numpy as np
 
 
@@ -22,9 +21,10 @@ class Rule:
     def get_action(self, board):
         f_board = np.ravel(board)
         observation = []
-        for i in range(self.cfg.BOARD_SIZE * self.cfg.BOARD_SIZE):
-            if f_board[i] == 0:
-                observation.append(i)
+        for i in range(self.cfg.BOARD_SIZE ** 2):
+            observation.append(f_board[i] == 0)
+            # if f_board[i] == 0:
+            #     observation.append(i)
         return observation
 
     def get_nextColor(self, board):  # board -> 다음 둘 돌의 색깔 리턴
