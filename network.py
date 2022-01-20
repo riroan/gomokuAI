@@ -6,17 +6,17 @@ from keras.layers.core import Activation, Dense, Flatten
 from keras.layers.normalization import BatchNormalization
 from keras.regularizers import l2
 from keras.optimizers import SGD
-
+import numpy as np
 
 class RL_player:
 
     def __init__(self, cfg):
         self.name = "RL_player"
-        self.network = self.make_network()
+        self.model = self.make_network()
         self.cfg = cfg
 
     def make_network(self):
-        board_input = Input((3, 15, 15))
+        board_input = Input((3, self.cfg.BOARD_SIZE, self.cfg.BOARD_SIZE))
         residual_model = board_input
 
         residual_model = Conv2D(filters=32, kernel_size=(3, 3), strides=(1, 1), padding="same",
@@ -33,7 +33,7 @@ class RL_player:
         policy_model = BatchNormalization()(policy_model)
         policy_model = Activation("relu")(policy_model)
         policy_model = Flatten()(policy_model)
-        policy_model = Dense(15 * 15, kernel_regularizer=l2(self.cfg.coef))(policy_model)
+        policy_model = Dense(self.cfg.BOARD_SIZE*self.cfg.BOARD_SIZE, kernel_regularizer=l2(self.cfg.coef))(policy_model)
         policy_model = Activation("softmax")(policy_model)
 
         # value head
@@ -56,11 +56,11 @@ class RL_player:
 
     def residual_block(self, x):
         x_shortcut = x
-        x = Conv2D(filters=32, kernel_size=(3, 3), strides=(1, 1), padding="same",
+        x = Conv2D(filters=32, kernel_size=(3, 3), padding="same",
                    data_format="channels_first", kernel_regularizer=l2(self.cfg.coef))(x)
         x = BatchNormalization()(x)
         x = Activation("relu")(x)
-        x = Conv2D(filters=32, kernel_size=(3, 3), strides=(1, 1), padding="same",
+        x = Conv2D(filters=32, kernel_size=(3, 3), padding="same",
                    data_format="channels_first", kernel_regularizer=l2(self.cfg.coef))(x)
         x = BatchNormalization()(x)
         x = add([x, x_shortcut])
@@ -73,7 +73,21 @@ class RL_player:
         self.network.summary()
         print("save network")
 
+    def preprocess(self, replay):
+        # code here
+        pass
 
-#p1_RL = RL_player()
-#p1_RL.save_network("p1_RL_220101")
-#test
+    def data_split(self, data):
+        size = data.shape[0]
+        return data[:int(size * self.cfg.split_rate)], data[int(size * self.cfg.split_rate):]
+
+    def train(self, replay):
+        # 작동하는지는 모름
+        X, P, V = self.preprocess(replay)
+        s = np.arange((X.shape[0],))
+        np.random.shuffle(s)
+        X, P, V = X[s], P[s], V[s] # data shuffle
+        X, X_val = self.data_split(X)
+        P, P_val = self.data_split(P)
+        V, V_val = self.data_split(V)
+        self.model.fit(X, (P, V), epochs = self.cfg.TRAIN_EPOCH, batch_size = self.cfg.BATCH_SIZE, validation_data=(X_val, (P_val, V_val)))
