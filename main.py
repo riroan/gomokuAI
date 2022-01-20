@@ -5,6 +5,7 @@ from game import Game
 from renderer import Renderer
 from rule import Rule
 from agent import Agent
+from replay import Replay
 
 def main():
     # init configuration
@@ -12,11 +13,12 @@ def main():
     winner = 0
     cfg = Config()
     rule = Rule(cfg)
-    game = Game(cfg, rule)
+    replay = Replay(cfg)
+    game = Game(cfg, rule, replay)
 
     # init pygame
     pygame.init()
-    screen = pygame.display.set_mode(cfg.size)
+    screen = pygame.display.set_mode(cfg.window_size)
     sf = pygame.font.SysFont("Arial",15,True)
     clock = pygame.time.Clock()
     pygame.display.set_caption("Omok")
