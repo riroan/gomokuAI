@@ -6,6 +6,8 @@ from renderer import Renderer
 from rule import Rule
 from agent import Agent
 from replay import Replay
+import sys
+
 
 def main():
     # init configuration
@@ -46,12 +48,15 @@ def main():
                     done, winner = rule.end_check(game.board)
                     game.over = done
             if event.type == pygame.QUIT:
-                game.over = done
+                # game.over = done  # 종료버튼 누르면 게임과 상관없이 윈도우창 나가기
+                pygame.quit()
+                sys.exit()
 
         pygame.display.flip()
 
     time.sleep(30)
     pygame.quit()
+
 
 if __name__ == "__main__":
     main()

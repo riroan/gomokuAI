@@ -74,8 +74,28 @@ class RL_player:
         print("save network")
 
     def preprocess(self, replay):
-        # code here
-        pass
+        current_color = replay[1]  # 이번에 둘 돌 색깔 -> X로 저장(why? X:현재플레이어의 돌, Y:상대플레이어의 돌)
+
+        S = np.zeros([3, 15, 15])
+        for i in range(self.cfg.BOARD_SIZE):
+            for j in range(self.cfg.BOARD_SIZE):
+                board = replay[0]
+                if board[i][j] == current_color:
+                    S[0][i][j] = current_color  # X 저장
+                if board[i][j] == current_color * -1:
+                    S[1][i][j] = current_color * -1  # Y 저장
+
+        last_move = replay[4]
+        xi = last_move[0]
+        yi = last_move[1]
+        S[2][xi][yi] = 1  # L저장
+
+        action = replay[2]
+        P = np.eye(255)[action]
+
+        V = replay[3]
+
+        return S, P, V
 
     def data_split(self, data):
         size = data.shape[0]
