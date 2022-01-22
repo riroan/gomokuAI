@@ -74,26 +74,37 @@ class RL_player:
         print("save network")
 
     def preprocess(self, replay):
+        replays = replay.replays
         current_color = replay[1]  # 이번에 둘 돌 색깔 -> X로 저장(why? X:현재플레이어의 돌, Y:상대플레이어의 돌)
+        S = []
+        P = []
+        V = []
+        for re in replays:
+            # S preprocess
+            S_element = np.zeros([3, 15, 15])
+            for i in range(self.cfg.BOARD_SIZE):
+                for j in range(self.cfg.BOARD_SIZE):
+                    board = re[0]
+                    if board[i][j] == current_color:
+                        S_element[0][i][j] = current_color  # X 저장
+                    if board[i][j] == current_color * -1:
+                        S_element[1][i][j] = current_color * -1  # Y 저장
 
-        S = np.zeros([3, 15, 15])
-        for i in range(self.cfg.BOARD_SIZE):
-            for j in range(self.cfg.BOARD_SIZE):
-                board = replay[0]
-                if board[i][j] == current_color:
-                    S[0][i][j] = current_color  # X 저장
-                if board[i][j] == current_color * -1:
-                    S[1][i][j] = current_color * -1  # Y 저장
+            last_move = re[4]
+            xi = last_move[0]
+            yi = last_move[1]
+            S_element[2][xi][yi] = 1  # L저장
 
-        last_move = replay[4]
-        xi = last_move[0]
-        yi = last_move[1]
-        S[2][xi][yi] = 1  # L저장
+            S.append(S_element)  # S에 추가
 
-        action = replay[2]
-        P = np.eye(255)[action]
+            # P preprocess
+            action = re[2]
+            p_element = np.eye(255)[action]
+            P.append(p_element)  # P에 추가
 
-        V = replay[3]
+            # V preprocess
+            v_element = re[3]
+            V.append(v_element)  # V에 추가
 
         return S, P, V
 
