@@ -20,6 +20,8 @@ class Game:
         x,y = act//self.cfg.BOARD_SIZE, act%self.cfg.BOARD_SIZE
         if self.board[x][y]:
             return False
+            
+        self.replay.put((self.board, act, 0))
         self.board[x][y] = self.color
 
         self.num += 1
@@ -34,10 +36,11 @@ class Game:
                 act = agent_b.get_action(self.board)
             else:
                 act = agent_w.get_action(self.board)
-            
+            data = (self.board, act, 0)
             if self.action(act):
                 done, reward = self.rule.end_check(self.board)
                 self.over = done
+                self.replay.put_replay(data)
                 print(self.board)
                 print()
         if reward == self.cfg.BLACK:
