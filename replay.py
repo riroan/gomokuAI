@@ -4,9 +4,10 @@ class ReplayData:
         self.action = action
         self.value = value
 
+
 class Replay:
     def __init__(self, cfg):
-        # replays: 두기전 오목판, 이번에 착수할 돌 색깔, 행동, 가치, 마지막으로 둔 돌의 위치
+        # replays: 두기전 오목판, 행동, 가치
         self.replays = []
         self.cfg = cfg
         # self.maxlen = cfg.maxlen
@@ -26,4 +27,3 @@ class Replay:
         if self.replays[-1].value != 0:  # 게임이 끝났다면 앞에 있는 리플레이들의 value도 업데이트
             for i in range(l):
                 self.replays[i].value = self.replays[l].value
-

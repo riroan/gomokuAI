@@ -75,35 +75,49 @@ class RL_player:
 
     def preprocess(self, replay):
         replays = replay.replays
-        current_color = replay[1]  # 이번에 둘 돌 색깔 -> X로 저장(why? X:현재플레이어의 돌, Y:상대플레이어의 돌)
         S = []
         P = []
         V = []
-        for re in replays:
+        for k, re in enumerate(replays):
+            board = re.board
+
+            # 보드에 놓아진 돌 개수 count
+            cnt = 0
+            for i in range(self.cfg.BOARD_SIZE):
+                for j in range(self.cfg.BOARD_SIZE):
+                    if board[i][j] != 0:
+                        cnt += 1
+
+            # 이번에 둘 돌 색깔 -> X로 저장(why? X:현재플레이어의 돌, Y:상대플레이어의 돌)
+            if cnt % 2 == 0:
+                current_color = self.cfg.BLACK
+            else:
+                current_color = self.cfg.WHITE
+
             # S preprocess
             S_element = np.zeros([3, 15, 15])
             for i in range(self.cfg.BOARD_SIZE):
                 for j in range(self.cfg.BOARD_SIZE):
-                    board = re[0]
                     if board[i][j] == current_color:
                         S_element[0][i][j] = current_color  # X 저장
                     if board[i][j] == current_color * -1:
                         S_element[1][i][j] = current_color * -1  # Y 저장
 
-            last_move = re[4]
-            xi = last_move[0]
-            yi = last_move[1]
-            S_element[2][xi][yi] = 1  # L저장
+            # 첫 리플레이이면 그냥 빈 칸, 그게 아니면 이전의 action을 last_move로 저장한다.
+            if cnt != 0 and k != 0:
+                last_move = replays[k-1].action
+                xi, yi = self.cfg.index2coordinate(last_move)
+                S_element[2][xi][yi] = 1  # L저장
 
             S.append(S_element)  # S에 추가
 
             # P preprocess
-            action = re[2]
+            action = re.action
             p_element = np.eye(255)[action]
             P.append(p_element)  # P에 추가
 
             # V preprocess
-            v_element = re[3]
+            v_element = re.value
             V.append(v_element)  # V에 추가
 
         return S, P, V
