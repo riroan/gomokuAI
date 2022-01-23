@@ -40,7 +40,7 @@ class Game:
             if self.action(act):
                 done, reward = self.rule.end_check(self.board)
                 self.over = done
-                self.replay.put_replay(data)
+                self.replay.put_replay(*data)
                 print(self.board)
                 print()
         if reward == self.cfg.BLACK:

@@ -1,7 +1,6 @@
 from config import Config
 from game import Game
 from rule import Rule
-from agent import Agent
 from replay import Replay
 from network import RL_player
 
@@ -12,6 +11,7 @@ def self_play_train():
     game = Game(cfg, rule, replay)
     network = RL_player(cfg)
     for epoch in range(cfg.SELF_PLAY_EPOCH):
+        game.init()
         game.self_play()
         network.train(game.replay)
         if epoch % 100 == 0:
