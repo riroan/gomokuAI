@@ -32,6 +32,8 @@ class Config:
         self.BLACK = 1
         self.WHITE = -1
 
+        self.SELF_PLAY_EPOCH = 400
+
         self.coef = 1e-4
         self.maxlen = 100
 
