@@ -56,7 +56,6 @@ class RL_player:
         # opt = SGD(lr=2e-3, momentum=1e-1, nesterov=True)  # stochastic gradient descend with momentum
         losses_type = ['categorical_crossentropy', 'mean_squared_error']  # cross-entrophy and MSE are weighted equally
         m.compile(optimizer="rmsprop", loss=losses_type)
-        m.summary()
         return m
 
     def predict(self, board):

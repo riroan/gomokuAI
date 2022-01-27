@@ -41,9 +41,9 @@ class MCTS:
                 current_node.backup(-current_node.value)
                 continue
             
-            p, v = model.predict(game_board)
-            p = p[0]
-            # p = np.ones((225,))/255
+            # p, v = model.predict(game_board)
+            # p = p[0]
+            p = np.ones((225,))/255
             v = 0
             current_node.value = v
             current_node.expansion(p)

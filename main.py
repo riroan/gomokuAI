@@ -56,6 +56,7 @@ def main():
 
     time.sleep(30)
     pygame.quit()
+    sys.exit()
 
 
 if __name__ == "__main__":
