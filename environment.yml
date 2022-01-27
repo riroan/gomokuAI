@@ -1,5 +1,0 @@
-name: gomoku
-channels:
-  - conda-forge
-  - defaults
-prefix: /home/riroan/anaconda3/envs/gomoku
