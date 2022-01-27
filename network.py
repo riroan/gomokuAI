@@ -10,6 +10,7 @@ from keras.models import Model
 from keras.regularizers import l2
 # from keras.optimizers import SGD
 import numpy as np
+from keras.models import load_model
 
 class RL_player:
 
@@ -76,9 +77,43 @@ class RL_player:
 
     def save_network(self, name):
         filename = name + "_network.h5"
-        self.network.save(filename)
-        self.network.summary()
-        print("save network")        
+        self.model.save(filename)
+        self.model.summary()
+        print("save network")
+
+    def load_network(self, filename):
+        self.model = load_model(filename)
+        print("load network")
+
+    def board_preprocessing(self, board, last_action):
+        # 보드에 놓아진 돌 개수 count
+        cnt = 0
+        for i in range(self.cfg.BOARD_SIZE):
+            for j in range(self.cfg.BOARD_SIZE):
+                if board[i][j] != 0:
+                    cnt += 1
+
+        # 이번에 둘 돌 색깔 -> X로 저장(why? X:현재플레이어의 돌, Y:상대플레이어의 돌)
+        if cnt % 2 == 0:
+            current_color = self.cfg.BLACK
+        else:
+            current_color = self.cfg.WHITE
+
+        # S preprocess
+        S_element = np.zeros([3, self.cfg.BOARD_SIZE, self.cfg.BOARD_SIZE])
+        for i in range(self.cfg.BOARD_SIZE):
+            for j in range(self.cfg.BOARD_SIZE):
+                if board[i][j] == current_color:
+                    S_element[0][i][j] = current_color  # X 저장
+                if board[i][j] == current_color * -1:
+                    S_element[1][i][j] = current_color * -1  # Y 저장
+
+        # 첫수가 아닐 때만 L값 저장
+        if last_action is not None:
+            xi, yi = self.cfg.index2coordinate(last_action)
+            S_element[2][xi][yi] = 1  # L저장
+
+        return S_element
 
     def preprocess(self, replay):
         replays = replay.replays
