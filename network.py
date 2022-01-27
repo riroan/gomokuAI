@@ -1,19 +1,23 @@
-from keras.engine.topology import Input
-from keras.engine.training import Model
-from keras.layers import add
-from keras.layers.convolutional import Conv2D
-from keras.layers.core import Activation, Dense, Flatten
-from keras.layers.normalization import BatchNormalization
+# from keras.engine.topology import Input
+# from keras.engine.training import Model
+# from keras.layers import add
+# from keras.layers.convolutional import Conv2D
+# from keras.layers.core import Activation, Dense, Flatten
+# from keras.layers.normalization import BatchNormalization
+
+from keras.layers import Input, Add, Conv2D, Activation, Dense, Flatten, BatchNormalization
+from keras.models import Model
 from keras.regularizers import l2
-from keras.optimizers import SGD
+# from keras.optimizers import SGD
 import numpy as np
 
 class RL_player:
 
     def __init__(self, cfg):
         self.name = "RL_player"
-        self.model = self.make_network()
         self.cfg = cfg
+
+        self.model = self.make_network()
 
     def make_network(self):
         board_input = Input((3, self.cfg.BOARD_SIZE, self.cfg.BOARD_SIZE))
@@ -49,10 +53,14 @@ class RL_player:
 
         m = Model(inputs=board_input, outputs=[policy_model, value_model])
 
-        opt = SGD(lr=2e-3, momentum=1e-1, nesterov=True)  # stochastic gradient descend with momentum
+        # opt = SGD(lr=2e-3, momentum=1e-1, nesterov=True)  # stochastic gradient descend with momentum
         losses_type = ['categorical_crossentropy', 'mean_squared_error']  # cross-entrophy and MSE are weighted equally
-        m.compile(optimizer=opt, loss=losses_type)
+        m.compile(optimizer="rmsprop", loss=losses_type)
+        m.summary()
         return m
+
+    def predict(self, board):
+        return self.model.predict(board)
 
     def residual_block(self, x):
         x_shortcut = x
@@ -63,7 +71,7 @@ class RL_player:
         x = Conv2D(filters=32, kernel_size=(3, 3), padding="same",
                    data_format="channels_first", kernel_regularizer=l2(self.cfg.coef))(x)
         x = BatchNormalization()(x)
-        x = add([x, x_shortcut])
+        x = Add()([x, x_shortcut])
         x = Activation("relu")(x)
         return x
 
@@ -71,7 +79,7 @@ class RL_player:
         filename = name + "_network.h5"
         self.network.save(filename)
         self.network.summary()
-        print("save network")
+        print("save network")        
 
     def preprocess(self, replay):
         replays = replay.replays
@@ -95,7 +103,7 @@ class RL_player:
                 current_color = self.cfg.WHITE
 
             # S preprocess
-            S_element = np.zeros([3, 15, 15])
+            S_element = np.zeros([3, self.cfg.BOARD_SIZE, self.cfg.BOARD_SIZE])
             for i in range(self.cfg.BOARD_SIZE):
                 for j in range(self.cfg.BOARD_SIZE):
                     if board[i][j] == current_color:
@@ -113,14 +121,14 @@ class RL_player:
 
             # P preprocess
             action = re.action
-            p_element = np.eye(255)[action]
+            p_element = np.eye(self.cfg.BOARD_SIZE ** 2)[action]
             P.append(p_element)  # P에 추가
 
             # V preprocess
             v_element = re.value
             V.append(v_element)  # V에 추가
-
-        return S, P, V
+        
+        return np.array(S), np.array(P), np.array(V)
 
     def data_split(self, data):
         size = data.shape[0]
@@ -129,10 +137,10 @@ class RL_player:
     def train(self, replay):
         # 작동하는지는 모름
         X, P, V = self.preprocess(replay)
-        s = np.arange((X.shape[0],))
+        s = np.arange(X.shape[0])
         np.random.shuffle(s)
         X, P, V = X[s], P[s], V[s] # data shuffle
         X, X_val = self.data_split(X)
         P, P_val = self.data_split(P)
         V, V_val = self.data_split(V)
-        self.model.fit(X, (P, V), epochs = self.cfg.TRAIN_EPOCH, batch_size = self.cfg.BATCH_SIZE, validation_data=(X_val, (P_val, V_val)))
+        self.model.fit(X, (P, V), epochs = self.cfg.TRAIN_EPOCH, batch_size = self.cfg.BATCH_SIZE, validation_data=(X_val, (P_val, V_val)), verbose = 2)

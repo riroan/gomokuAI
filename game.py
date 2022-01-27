@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from agent import Agent
 
 class Game:
@@ -21,7 +22,7 @@ class Game:
         if self.board[x][y]:
             return False
             
-        self.replay.put((self.board, act, 0))
+        self.replay.put_replay(self.board, act, 0)
         self.board[x][y] = self.color
 
         self.num += 1
@@ -31,6 +32,7 @@ class Game:
     def self_play(self):
         agent_b = Agent(self.cfg.BLACK, self.cfg)
         agent_w = Agent(self.cfg.WHITE, self.cfg)
+        start = time.time()
         while not self.over:
             if self.color == self.cfg.BLACK:
                 act = agent_b.get_action(self.board)
@@ -40,10 +42,8 @@ class Game:
             if self.action(act):
                 done, reward = self.rule.end_check(self.board)
                 self.over = done
-                self.replay.put_replay(*data)
-                print(self.board)
-                print()
+        print(self.board)
         if reward == self.cfg.BLACK:
-            print("black win")
+            print(f">> black win, elapsed time : {time.time()-start}, max_turn : {self.num}")
         else:
-            print("white win")
+            print(f">> white win, elapsed time : {time.time()-start}, max_turn : {self.num}")

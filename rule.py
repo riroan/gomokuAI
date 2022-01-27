@@ -4,8 +4,6 @@ import numpy as np
 class Rule:
     def __init__(self, cfg):
         self.cfg = cfg
-        self.reward = 0
-        self.done = False
 
     # def move(self, color):  # 지우기
     #     # action = ...
@@ -46,37 +44,28 @@ class Rule:
         for i in range(self.cfg.BOARD_SIZE):
             for j in range(self.cfg.BOARD_SIZE - 4):
                 if board[i][j] != 0 and board[i][j] == board[i][j+1] and board[i][j] == board[i][j+2] and board[i][j] == board[i][j+3] and board[i][j] == board[i][j+4]:
-                    self.done = True
-                    self.reward = color
-                    return self.done, self.reward
+                    return True, color
 
         # 세로줄 체크
         for i in range(self.cfg.BOARD_SIZE - 4):
             for j in range(self.cfg.BOARD_SIZE):
                 if board[i][j] != 0 and board[i][j] == board[i+1][j] and board[i][j] == board[i+2][j] and board[i][j] == board[i+3][j] and board[i][j] == board[i+4][j]:
-                    self.done = True
-                    self.reward = color
-                    return self.done, self.reward
+                    return True, color
 
         # 우상향 대각선
         for i in range(self.cfg.BOARD_SIZE - 4):
             for j in range(4, self.cfg.BOARD_SIZE):
                 if board[i][j] != 0 and board[i][j] == board[i+1][j-1] and board[i][j] == board[i+2][j-2] and board[i][j] == board[i+3][j-3] and board[i][j] == board[i+4][j-4]:
-                    self.done = True
-                    self.reward = color
-                    return self.done, self.reward
+                    return True, color
 
         # 우하향 대각선
         for i in range(self.cfg.BOARD_SIZE - 4):
             for j in range(self.cfg.BOARD_SIZE - 4):
                 if board[i][j] != 0 and board[i][j] == board[i+1][j+1] and board[i][j] == board[i+2][j+2] and board[i][j] == board[i+3][j+3] and board[i][j] == board[i+4][j+4]:
-                    self.done = True
-                    self.reward = color
-                    return self.done, self.reward
+                    return True, color
 
         # 보드에 빈 공간이 없을 때 비긴 상태가 된다.
         observation = self.get_action(board)
         if len(observation) == 0:
-            self.done = True
-            self.reward = 0
-        return self.done, self.reward
+            return True, 0
+        return False, 0

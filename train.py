@@ -10,6 +10,8 @@ def self_play_train():
     replay = Replay(cfg)
     game = Game(cfg, rule, replay)
     network = RL_player(cfg)
+    print(">> initialization successed")
+    print(">> start self play")
     for epoch in range(cfg.SELF_PLAY_EPOCH):
         game.init()
         game.self_play()
