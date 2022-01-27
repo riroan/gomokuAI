@@ -31,6 +31,7 @@ def main():
 
     # main loop
     while not game.over:
+        pygame.display.flip()
         clock.tick(cfg.FPS)
         if game.color == cfg.BLACK:
             action = agent.get_action(game.board)
@@ -48,13 +49,9 @@ def main():
                     done, winner = rule.end_check(game.board)
                     game.over = done
             if event.type == pygame.QUIT:
-                # game.over = done  # 종료버튼 누르면 게임과 상관없이 윈도우창 나가기
-                pygame.quit()
-                sys.exit()
+                game.over = True  # 종료버튼 누르면 게임과 상관없이 윈도우창 나가기
 
-        pygame.display.flip()
-
-    time.sleep(30)
+        
     pygame.quit()
     sys.exit()
 
