@@ -257,3 +257,6 @@ Thumbs.db
 
 *.h5
 *.out
+
+# virtual environment
+gomoku_venv
