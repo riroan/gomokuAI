@@ -11,6 +11,7 @@ from keras.regularizers import l2
 # from keras.optimizers import SGD
 import numpy as np
 from keras.models import load_model
+from replay import ReplayData
 
 class RL_player:
 
@@ -115,11 +116,65 @@ class RL_player:
 
         return S_element
 
+    def convert_replay(self, replays):
+        conv_replays = []
+        # 7가지 방법으로 리플레이를 변환한 후 리턴
+        for type in range(7):
+            tmp = []
+            for re in replays:
+                # 변환 후 tmp에 추가
+                new_board = self.board_transform(re.board, type)
+                new_action = self.action_transform(re.action, type)
+                tmp.append(ReplayData(new_board, new_action, re.value))
+            
+            conv_replays.append(tmp)
+        return conv_replays
+
+    def board_transform(self, board, num):
+        if num == 0:
+            return np.rot90(board, 1)  # 90도 회전
+
+        elif num == 1:
+            return np.rot90(board, 2)  # 180도 회전
+
+        elif num == 2:
+            return np.rot90(board, 3)  # 270도 회전
+
+        elif num == 3:
+            return np.fliplr(board)  # 좌우반전
+
+        elif num == 4:
+            return np.rot90(np.fliplr(board), 2)  # 상하반전
+
+        elif num == 5:
+            return np.rot90(np.fliplr(board), 1)  # 위로 90도 반전
+        else:  # num == 6
+            return np.rot90(np.fliplr(board), 3)  # 아래로 90도 반전
+
+    def action_transform(self, action, num):
+        x, y = action//self.cfg.BOARD_SIZE, action%self.cfg.BOARD_SIZE
+
+        board = np.zeros((self.cfg.BOARD_SIZE, self.cfg.BOARD_SIZE))
+        board[x][y] = 1
+        t_board = self.board_transform(board, num)
+        temp = np.where(t_board == 1)
+        new_action = (temp[0][0], temp[1][0])
+        return new_action
+
     def preprocess(self, replay):
         replays = replay.replays
         S = []
         P = []
         V = []
+
+        self.preprocess_replays(replays, S, P, V)
+        converted_replays = self.convert_replay(replays)
+        for r in converted_replays:
+            self.preprocess_replays(r, S, P, V)
+
+        return np.array(S), np.array(P), np.array(V)
+    
+    def preprocess_replays(self, replays, S, P, V):
         for k, re in enumerate(replays):
             board = re.board
 
@@ -161,8 +216,6 @@ class RL_player:
             # V preprocess
             v_element = re.value
             V.append(v_element)  # V에 추가
-        
-        return np.array(S), np.array(P), np.array(V)
 
     def data_split(self, data):
         size = data.shape[0]
