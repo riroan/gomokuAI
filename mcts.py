@@ -10,7 +10,9 @@ class MCTS:
 
         self.node = Node(board, cfg, color)
         self.model_b = RL_player(cfg)
+        self.model_b.model.load_weights("model_b_15.h5")
         self.model_w = RL_player(cfg)
+        self.model_w.model.load_weights("model_w_15.h5")
         self.rule = Rule(cfg)
         self.cfg = cfg
 
@@ -41,7 +43,10 @@ class MCTS:
                 current_node.backup(-current_node.value)
                 continue
             
-            # p, v = model.predict(game_board)
+            data = model.board_preprocessing(game_board, action)
+            data = np.expand_dims(data, axis = 0)
+            
+            # p, v = model.predict(data)
             # p = p[0]
             p = np.ones((225,))/255
             v = 0
