@@ -7,6 +7,10 @@ class Agent:
         self.mcts = MCTS(board, self.color, self.cfg)
 
     def get_action(self, last_action=None):
+        
         if last_action is not None:
-            self.mcts.node = self.mcts.node.children[last_action]
+            try:
+                self.mcts.node = self.mcts.node.children[last_action]
+            except:
+                pass
         return self.mcts.rollout()

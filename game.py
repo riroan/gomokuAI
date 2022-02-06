@@ -30,16 +30,18 @@ class Game:
         return True
 
     def self_play(self):
-        agent_b = Agent(self.cfg.BLACK, self.cfg)
-        agent_w = Agent(self.cfg.WHITE, self.cfg)
+        agent_b = Agent(self.board, self.cfg.BLACK, self.cfg)
+        agent_w = Agent(self.board, self.cfg.WHITE, self.cfg)
         start = time.time()
+        last_action = None
         while not self.over:
             if self.color == self.cfg.BLACK:
-                act = agent_b.get_action(self.board)
+                act = agent_b.get_action(last_action)
             else:
-                act = agent_w.get_action(self.board)
+                act = agent_w.get_action(last_action)
             data = (self.board, act, 0)
             if self.action(act):
+                last_action = act
                 done, reward = self.rule.end_check(self.board)
                 self.over = done
         print(self.board)
