@@ -13,6 +13,7 @@ def main():
     # init configuration
     done = False
     winner = 0
+    last_action = None
     cfg = Config()
     rule = Rule(cfg)
     replay = Replay(cfg)
@@ -27,14 +28,14 @@ def main():
     renderer = Renderer(sf, cfg)
     renderer.render_base(screen)
 
-    agent = Agent(cfg.BLACK, cfg)
+    agent = Agent(game.board, cfg.BLACK, cfg)
 
     # main loop
     while not game.over:
         pygame.display.flip()
         clock.tick(cfg.FPS)
         if game.color == cfg.BLACK:
-            action = agent.get_action(game.board)
+            action = agent.get_action(last_action)
             if game.action(action):
                 renderer.render_dol(screen, action, -game.color, game.num)
                 done, winner = rule.end_check(game.board)
@@ -45,6 +46,7 @@ def main():
             if event.type == pygame.MOUSEBUTTONUP and event.button == cfg.LEFT:
                 action = renderer.get_action(event.pos)
                 if game.action(action):
+                    last_action = action
                     renderer.render_dol(screen, action, -game.color, game.num)
                     done, winner = rule.end_check(game.board)
                     game.over = done

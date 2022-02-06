@@ -10,13 +10,12 @@ class MCTS:
 
         self.node = Node(board, cfg, color)
         self.model_b = RL_player(cfg)
-        self.model_b.model.load_weights("model_b_15.h5")
         self.model_w = RL_player(cfg)
-        self.model_w.model.load_weights("model_w_15.h5")
         self.rule = Rule(cfg)
         self.cfg = cfg
 
     def simulation(self):
+        print(self.node)
         for epoch in range(self.cfg.NUM_SIMULATION):
             game_board = np.copy(self.board)
             color = self.color
@@ -31,7 +30,6 @@ class MCTS:
                 color *= -1
 
                 valid[action] = 0
-                current_node.N+=1
             
             
             if color == self.cfg.BLACK:
@@ -56,10 +54,13 @@ class MCTS:
             done, reward = self.rule.end_check(game_board)  # game result
             if done:
                 current_node.end = True
-                current_node.value = reward
+                #current_node.value = reward
+                current_node.value = -1
 
             current_node.backup(reward)
     
     def rollout(self):
         self.simulation()
-        return self.node.get_action()
+        action = self.node.get_action()
+        self.node = self.node.children[action]
+        return action
