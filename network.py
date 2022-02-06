@@ -30,7 +30,7 @@ class RL_player:
         residual_model = BatchNormalization()(residual_model)
         residual_model = Activation("relu")(residual_model)
 
-        for _ in range(2):
+        for _ in range(3):
             residual_model = self.residual_block(residual_model)
 
         # policy head
