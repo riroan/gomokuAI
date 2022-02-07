@@ -7,6 +7,7 @@ class Node:
         self.W = 0
         self.U = 0
         self.P = P
+        self.value = 0
 
         self.color = color # next color
 

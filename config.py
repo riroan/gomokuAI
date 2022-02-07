@@ -42,6 +42,10 @@ class Config:
         col = index % self.BOARD_SIZE
         return int(row), int(col)
     
+    def coordinate2index(self, coord):
+        row, col = coord[0], coord[1]
+        return row * self.BOARD_SIZE + col
+    
     def text_pos(self, ix, x, y):
         if ix < 10:
             return (self.MARGIN + y*self.SPACE - 3, self.MARGIN + x*self.SPACE - 3)

@@ -28,7 +28,7 @@ def main():
     renderer = Renderer(sf, cfg)
     renderer.render_base(screen)
 
-    agent = Agent(game.board, cfg.BLACK, cfg)
+    agent = Agent(game, game.board, cfg.BLACK, cfg)
 
     # main loop
     while not game.over:

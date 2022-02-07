@@ -10,7 +10,7 @@ reference : [AlphaGomoku: An AlphaGo-based Gomoku Artificial Intelligence using 
 python -m venv [env_name]
 
 # window
-[env_name]/Scripts/activate.bat
+[env_name]\Scripts\activate.bat
 # linux
 source [env_name]/bin/activate
 
